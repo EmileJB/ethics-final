@@ -1,3 +1,4 @@
+#final project datasets
 import pandas as pd
 import operator
 from sodapy import Socrata
@@ -9,9 +10,7 @@ print("")
 
 bikes_in_buildings = client.get("scjj-6yaf", select = 'noofbicyclerequested, ownerzipcode', limit = 50000) #not sure if all of these are necessary
 
-#print(bikes_in_buildings)
 #find the areas with the most requests
-
 
 zip_codes = {}
 
@@ -27,17 +26,29 @@ sorted_zip_codes = dict( sorted(zip_codes.items(), key=operator.itemgetter(1), r
 
 print('Dictionary in descending order by value : ', sorted_zip_codes)
 
+print()
+print("line break")
+print()
 
 
 
-print("ramp lift usage")
+bus_service_delivered = client.get("2e6s-9gpm", select = 'borough, route_id, service_delivered',  limit = 50000) 
 
-ramp_lift_usage = client.get("e2u6-bmnn", limit = 50000) 
-print (ramp_lift_usage)
+bad_service = []
+
+for entry in bus_service_delivered:
+
+    if float(entry['service_delivered']) < 0.60 and entry['route_id'] not in bad_service:
+        bad_service.append(entry['route_id'])
 
 
-bus_service_delivered = client.get("2e6s-9gpm", limit = 50000) 
+
+bad_service = [entry for entry in bad_service if not entry.startswith('S')]  #remove all the routes related to Staten island because they are outliers (sorry)
+print(bad_service)
 
 
-mta_daily_ridership = client.get("vxuj-8kew", limit = 50000)
+
+
+
+
 
