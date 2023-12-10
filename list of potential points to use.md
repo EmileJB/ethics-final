@@ -67,15 +67,15 @@ List of Bus routes with really bad service:
 
 M100: 
 Q56: 
-Q54: 
-Q24: 
-Q64: 
-Q110: 
-Q55: 
-Q112: 
-Q59: 
-QM17: 
-BM3: 
+Q54:  
+Q24:  
+Q64:  
+Q110:  
+Q55:  
+Q112:  
+Q59:  
+QM17:  
+BM3:  
 
 
 
