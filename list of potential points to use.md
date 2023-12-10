@@ -64,13 +64,12 @@ Jackson Heights: 40.7557, -73.8831
 List of Bus routes with really bad service:
 ['M100', 'Q56', 'Q54', 'Q24', 'Q64', 'Q58', 'Q110', 'Q55', 'Q112', 'Q59', 'QM17', 'BM3']
 
-
-M100: 
-Q56: 
+M100:  
+Q56:  
 Q54:  
 Q24:  
 Q64:  
-Q110:  
+Q110:    
 Q55:  
 Q112:  
 Q59:  
@@ -78,12 +77,5 @@ QM17:
 BM3:  
 
 
-
-
-Targets:  
-
-Financial district?
-
-Times square?
 
 
