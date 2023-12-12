@@ -1,35 +1,3 @@
-"""
-The below were potential dictionary structures I was considering to store stop and route info
-{
-"stop_id":,
-"stop_name":,
-"lat":,
-"lon":,
-"distance":,
-"route": {
-"route_id":,
-"route_short_name":,
-"route_long_name":
-}
-}
-
-Can make the below a list of stops if user wants to see all stops nearby, not just closest
-{
-"route_name": {
-  "stop_id":,
-  "stop_name":,
-  "lat":,
-  "lon":,
-  "distance":,
-  "route": {
-  "route_id":,
-  "route_short_name":,
-  "route_long_name":
-    }
-  }
-}
-"""
-
 from geopy import distance
 import json
 
@@ -66,6 +34,7 @@ def print_return_stops(return_stops):
     print(f"Part of the {stop['route']['route_short_name']} {stop['route']['route_long_name']} route")
     print()
   print("############")
+  
 
 def get_stops_near_location(lat,lon,radius):
   return_stops = {}
@@ -89,12 +58,7 @@ def get_stops_near_location(lat,lon,radius):
             return_stops[current_route] = target_stop
   #maybe process with some function
   print_return_stops(return_stops)
-
-
-#get_stops_near_location(40.672980,-73.704950,1000) Testing near my home
-
-
-#get_stops_near_location(40.657660,-73.672020,1000) Testing Regal Lynbrook
+  return return_stops
 
 
 

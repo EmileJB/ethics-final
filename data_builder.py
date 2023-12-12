@@ -7,6 +7,7 @@ from pathlib import Path
 import os
 import copy
 import json
+import csv
 
 #None of the below code ended up being necessary but may still be useful in the future
 """
@@ -36,16 +37,7 @@ transitland_geosearch_endpoint = "/routes"
 
 parameters = {
   'api_key':transitland_key,
-  #'adm1_name':"New York",
-  #'onestop_id':"r-dr5r-a",
-  #'limit':1,
-  #'lat':40.672980,
-  #'lon':-73.704950,
-  #'radius':1000
 }
-
-
-#download_feed("f-dr5-mtanyclirr")
 
 
 #search proccess
@@ -60,21 +52,18 @@ parameters = {
 # 7b: Make sure to include distance from starting position to starting stop and from ending position to ending stop
 # 8: If nothing found for Step 6, repeat steps 1-5 but using the ending location instead of the starting location
 # 9: Search through returned routes in step 8 and see if the coordinates of any of the stops in each route are within a specified range (transfer distance) of any of the stops in any of the routes in step 5
-# 10: For each route that meets this criteria, create a touple (or something similar) combining that route with the route it connects with and add to a list of route-pairs to be returned to user
+# 10: For each route that meets this criteria, create a tuple (or something similar) combining that route with the route it connects with and add to a list of route-pairs to be returned to user
 # 10b: Make sure to include what the transfer point is (If multiple transfer points in a route-pair pick the one with the smallest distance) and the distance between transfer points
 # 11: Repeat recursively by going back to step 8 and creating a list of all routes that are within specified transfer distance of a stop in each of the returned routes (this means repeating steps 1-5 but using each stop as essentially a new starting point and having to request the API again)
-
-
-#Note, Stops do seem to be in order when getting them from singular route requests
-#Useful when building travel instructions but need to keep in mind when doing so to ignore stops with duplicate names in the same route
-
 
 temp_storage = []
 
 def response_to_temp(response):
   data = response.json()
+  data['routes'][0].pop('geometry')
   temp_storage.append(data['routes'][0])
 
+# transfers data from temp_storage to routes.json
 def temp_to_local_routes():
   with open('routes.json','r') as openfile:
     json_file = json.load(openfile)
@@ -83,6 +72,7 @@ def temp_to_local_routes():
   with open('routes.json','w') as openfile:
     json.dump(json_file,openfile,indent=4)
 
+# logs all attempted downloads as completed in download_log.json
 def temp_to_local_logs():
   with open('download_log.json','r') as openfile:
     json_file = json.load(openfile)
@@ -97,6 +87,7 @@ def temp_to_local_logs():
 def temp_to_local():
   temp_to_local_routes()
   temp_to_local_logs()
+  temp_storage.clear()
 
   
   
@@ -127,7 +118,8 @@ def search_for_routes(lat,lon,radius):
     'api_key':transitland_key,
     'lat':lat,
     'lon':lon,
-    'radius':radius
+    'radius':radius,
+    'limit':100
   }
   query_string = urllib.parse.urlencode(search_parameters)
   search_url = transitland_base_url + transitland_geosearch_endpoint + "?" + query_string
@@ -154,9 +146,20 @@ def check_download_logs(response):
     json.dump(json_file,openfile,indent=4)
   #return temp_logs
   return json_file['attempted']
-      
+
+def save_results(file_name, return_stops):
+  csv_name = file_name + ".csv"
+  geojson_name = file_name + ".geojson"
+  with open(csv_name,"w") as openfile:
+    csvwriter = csv.writer(openfile)
+    #csvwriter.writerow()
+
+#function used to make routes.json much, much smaller by removing data we weren't using
+def data_shrinker():
+  with open('routes.json','r') as openfile:
+    json_file = json.load(openfile)
+    for route in json_file['routes']:
+      route.pop('geometry')
+  with open('routes.json','w') as openfile:
+    json.dump(json_file,openfile,indent=4)
   
-  
-  
-#search_for_routes(40.672980,-73.704950,1000) #Checks for Routes Near My House
-#search_for_routes(40.657660,-73.672020,1000) #Checks for Routes Near Regal Lynbrook
